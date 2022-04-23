@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+
+ <title>A Espiral de Ulam</title>
+ 
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+</head>
+<style>
+</style>	
+
+
+<body>
+
+      <h1><a href="https://ideiasesquecidas.com"> <img src=	"https://ideiasesquecidas.files.wordpress.com/2020/03/forgottenlogo.png" width="90" height = "50"></a>A Espiral de Ulam</h1>
+
+<h2> Visualização de números primos na Espiral de Ulam. Para a teoria, vide <a href="https://ideiasesquecidas.com/2022/04/22/a-colmeia-dos-numeros-primos/">  aqui. </a> <h2> 
+
+<h3> Núm. voltas: </h3>
+<form>
+		  <select onchange = "Desenhar()" name="Camadas" id="SelectCamadas">
+		    
+		    <option value="1">1</option>
+		    <option value="2" >2</option>
+		    <option value="3" selected>3</option>
+		    <option value="4">4</option>
+		    <option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+		    <option value="15">15</option>
+		    <option value="50">50</option>
+		    <option value="100">100</option>			
+			<option value="150">150</option>			
+		    <option value="200">200</option>			
+		    
+		  </select>		  
+</form>
+		
+	
+
+</Body>   
+</Html>  
+
+<script type = "text/javascript">
+    var svg = d3.select("body")
+        .append("svg")
+        .attr("width", 1820)
+        .attr("height", 1500);
+   
+	Desenhar();
+	
+	function Retangulo(x,y, lado,strColor)
+	{
+	svg.append("rect")
+		  .attr("x", x)
+		  .attr("y", y)
+		  .attr("width", lado)
+		  .attr("height", lado)
+		  .attr("stroke", "gray")
+		  .attr("fill", strColor)
+	}
+	
+    function sieve(n)
+    {
+    var arrSieve = [];
+	nmax = Math.floor(Math.sqrt(n));
+	
+	//Preenche tudo com 1
+	  for (i=1; i <= n;i++)
+	{
+	arrSieve.push(1);
+	}
+    
+    for (i=2; i <= nmax+1;i++)
+	{
+        if (arrSieve[i] ==1)
+		{
+            imax = Math.ceil(n/i);
+            for (k=2; k< imax; k++)
+			{
+                arrSieve[k*i] = 0;
+			}
+		}
+    }
+
+		
+	return(arrSieve);
+    }
+
+
+	function Desenhar()
+	{
+	svg.selectAll("*").remove();
+
+	//---------------------------------------------------------------
+	
+	var x;
+	var y;
+	var raio;
+	var count =0;
+	var sequencia=[];
+	var maxStep=1;
+	var count;
+	var direcao = 0;
+	var i; 
+	var k;
+	
+	x =550;
+	y = 550;
+	
+	sequencia.push("direita");
+	sequencia.push("baixo");
+	sequencia.push("esquerda");
+	sequencia.push("cima");
+
+	numCamadas =d3.select("#SelectCamadas").property("value");
+
+	raio = 25 - 15*numCamadas/200;
+	
+	//Plot initial hexagon
+	Retangulo(x,y, raio, 'gray');
+	count =2;
+	
+	arrSieve = sieve(10110); //Numero suficientemente grande
+	
+	for (i=1; i<=numCamadas; i++)
+	{
+		switch(sequencia[direcao]) {
+			  case "direita":
+				// code block
+				for (k = 1; k <=maxStep; k++)
+				{
+					x += raio;				
+					if (arrSieve[count] ==0)
+					{
+						Retangulo(x,y, raio, 'gray');
+					}
+					else
+					{
+						Retangulo(x,y, raio, 'goldenrod');
+					}					
+				      count = count + 1;
+				}			
+				break;
+			  case "baixo":
+				for (k = 1; k <=maxStep; k++)
+				{
+					y += raio;				
+					if (arrSieve[count] ==0)
+					{
+						Retangulo(x,y, raio, 'gray');
+					}
+					else
+					{
+						Retangulo(x,y, raio, 'goldenrod');
+					}					
+				      count = count + 1;
+				}
+				break;
+			  case "esquerda":
+				for (k = 1; k <=maxStep; k++)
+				{
+					x -= raio;				
+					if (arrSieve[count] ==0)
+					{
+						Retangulo(x,y, raio, 'gray');
+					}
+					else
+					{
+						Retangulo(x,y, raio, 'goldenrod');
+					}					
+				      count = count + 1;
+				}
+					break;
+				case "cima":
+				for (k = 1; k <=maxStep; k++)
+				{
+					y -= raio;				
+					if (arrSieve[count] ==0)
+					{
+						Retangulo(x,y, raio, 'gray');
+					}
+					else
+					{
+						Retangulo(x,y, raio, 'goldenrod');
+					}					
+				      count = count + 1;
+				}
+			}
+			direcao = i % 4;
+			
+			if (i %2 ==0)
+			{
+				maxStep +=1;
+				
+			}
+			
+			if (i==numCamadas-1)
+			{ //Para corrigir o último quadrado
+				maxStep-=1;
+			}
+			
+	}
+	
+	
+	}
+
+
+	
+  </script>
+</body>
+</html>
